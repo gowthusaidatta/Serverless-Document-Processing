@@ -1,0 +1,27 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: claims.incoming
+  namespace: default
+  labels:
+    strimzi.io/cluster: claims-kafka
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 604800000
+    segment.ms: 86400000
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: claims.processed
+  namespace: default
+  labels:
+    strimzi.io/cluster: claims-kafka
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 604800000
+    segment.ms: 86400000

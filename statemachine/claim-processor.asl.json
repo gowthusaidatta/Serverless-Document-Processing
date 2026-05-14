@@ -1,0 +1,107 @@
+{
+  "Comment": "Claims Document Processing Pipeline with fraud detection and error handling",
+  "StartAt": "VirusScan",
+  "States": {
+    "VirusScan": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:000000000000:function:VirusScan",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 1.5
+        }
+      ],
+      "ResultPath": "$.virusResult",
+      "Next": "OCRExtract",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "PublishDeadLetter"
+        }
+      ]
+    },
+    "OCRExtract": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:000000000000:function:OCRExtract",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 1.5
+        }
+      ],
+      "ResultPath": "$.ocrResult",
+      "Next": "FraudDetection",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "PublishDeadLetter"
+        }
+      ]
+    },
+    "FraudDetection": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.ocrResult.extractedText",
+          "StringMatches": "*fraud*",
+          "Next": "HumanReviewQueue"
+        }
+      ],
+      "Default": "FinalStore"
+    },
+    "HumanReviewQueue": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "FinalStore"
+    },
+    "FinalStore": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:000000000000:function:FinalStore",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "End": true,
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "PublishDeadLetter"
+        }
+      ]
+    },
+    "PublishDeadLetter": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:000000000000:claims-dead-letter-topic",
+        "Message.$": "States.JsonToString($.error)",
+        "Subject": "Claims Processing Pipeline Error"
+      },
+      "ResultPath": "$.deadLetterPublish",
+      "End": true
+    }
+  }
+}

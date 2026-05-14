@@ -1,0 +1,14 @@
+{
+  "idempotencyTest": {
+    "documentId": "test-idempotency-doc-12345",
+    "payload": {
+      "documentId": "test-idempotency-doc-12345",
+      "claimType": "insurance_claim",
+      "claimAmount": 5000.00,
+      "claimDate": "2024-05-14",
+      "claimDescription": "Test document for idempotency validation",
+      "testFraud": false,
+      "claimStatus": "received"
+    }
+  }
+}

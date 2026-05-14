@@ -1,0 +1,95 @@
+# Local development and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# LocalStack and Docker
+.localstack/
+.docker-compose.env
+localstack-*
+docker-compose.override.yml
+
+# Kubernetes
+.minikube/
+kubeconfig
+.kube/config
+
+# Logs
+*.log
+logs/
+*.out
+
+# Lambda zip files
+lambda_functions/*/function.zip
+
+# Reports
+report.json
+*.html
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Testing artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Node modules (if using any Node tools)
+node_modules/
+
+# Temporary data
+*.sqlite
+*.db
+
+# Mac-specific
+.AppleDouble
+.LSOverride
+._*

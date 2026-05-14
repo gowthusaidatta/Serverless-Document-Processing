@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: serverless-localstack
+    ports:
+      - "4566:4566"  # Main edge port
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - SERVICES=lambda,stepfunctions,dynamodb,sns
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    volumes:
+      - "${TMPDIR:-.}/.localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    healthcheck:
+      test: ["CMD", "awslocal", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - serverless-network
+
+networks:
+  serverless-network:
+    driver: bridge
