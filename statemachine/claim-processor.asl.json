@@ -1,5 +1,14 @@
 {
   "Comment": "Claims Document Processing Pipeline with fraud detection and error handling",
+  "Catch": [
+    {
+      "ErrorEquals": [
+        "States.ALL"
+      ],
+      "ResultPath": "$.error",
+      "Next": "PublishDeadLetter"
+    }
+  ],
   "StartAt": "VirusScan",
   "States": {
     "VirusScan": {
