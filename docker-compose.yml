@@ -16,7 +16,6 @@ services:
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
     volumes:
-      - "${TMPDIR:-.}/.localstack:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     healthcheck:
       test: ["CMD", "awslocal", "health"]
@@ -30,3 +29,5 @@ services:
 networks:
   serverless-network:
     driver: bridge
+
+ 
